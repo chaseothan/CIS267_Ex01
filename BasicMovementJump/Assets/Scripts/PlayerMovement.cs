@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class PlayerMovement : MonoBehaviour
 {
@@ -11,6 +12,7 @@ public class PlayerMovement : MonoBehaviour
     private float inputHorizontal;
     //12
     public float jumpForce;
+    private bool isGrounded;
 
     // Start is called before the first frame update
     void Start()
@@ -49,9 +51,33 @@ public class PlayerMovement : MonoBehaviour
 
     private void jump()
     {
-        if(Input.GetKeyDown(KeyCode.Space))
+        if(Input.GetKeyDown(KeyCode.Space) && isGrounded)
         {
             playerRigidBody.velocity = new Vector2(playerRigidBody.velocity.x, jumpForce);
+        }
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        //Debug.Log(collision.gameObject);
+
+        if (collision.gameObject.CompareTag("OB"))
+        {
+            SceneManager.LoadScene("SampleScene");
+
+        }
+        else if(collision.gameObject.CompareTag("Ground"))
+        {
+            isGrounded = true;
+
+        }
+
+    }
+    private void OnCollisionExit2D(Collision2D collision)
+    {
+        if(collision.gameObject.CompareTag("Ground"))
+        {
+            isGrounded = false;
         }
     }
 }
