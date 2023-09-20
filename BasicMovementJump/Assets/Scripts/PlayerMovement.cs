@@ -12,7 +12,8 @@ public class PlayerMovement : MonoBehaviour
     private float inputHorizontal;
     //12
     public float jumpForce;
-    private bool isGrounded;
+    private bool canJump;
+
 
     // Start is called before the first frame update
     void Start()
@@ -22,6 +23,8 @@ public class PlayerMovement : MonoBehaviour
         //becuase the rigidbody2d is attached to the player and this script
         //is also attached to the player.
         playerRigidBody = GetComponent<Rigidbody2D>();
+        canJump = true;
+
     }
 
     // Update is called once per frame
@@ -47,13 +50,29 @@ public class PlayerMovement : MonoBehaviour
         inputHorizontal = Input.GetAxisRaw("Horizontal");
 
         playerRigidBody.velocity = new Vector2(movementSpeed * inputHorizontal, playerRigidBody.velocity.y);
+
+        flipPlayer();
+    }
+
+    private void flipPlayer()
+    {
+        if (inputHorizontal > 0)
+        {
+            transform.localRotation = Quaternion.Euler(0, 0, 0);
+        }
+        else if(inputHorizontal <0)
+        {
+            transform.localRotation = Quaternion.Euler(0, 100, 0);
+        }
     }
 
     private void jump()
     {
-        if(Input.GetKeyDown(KeyCode.Space) && isGrounded)
+        if(Input.GetKeyDown(KeyCode.Space) && canJump)
         {
             playerRigidBody.velocity = new Vector2(playerRigidBody.velocity.x, jumpForce);
+
+            canJump = false;
         }
     }
 
@@ -68,7 +87,7 @@ public class PlayerMovement : MonoBehaviour
         }
         else if(collision.gameObject.CompareTag("Ground"))
         {
-            isGrounded = true;
+            canJump = true;
 
         }
 
@@ -77,7 +96,7 @@ public class PlayerMovement : MonoBehaviour
     {
         if(collision.gameObject.CompareTag("Ground"))
         {
-            isGrounded = false;
+            canJump = false;
         }
     }
 }
