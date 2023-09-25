@@ -12,7 +12,9 @@ public class PlayerMovement : MonoBehaviour
     private float inputHorizontal;
     //12
     public float jumpForce;
-    private bool canJump;
+    private int numJumps;
+    private int maxNumJumps;
+
 
 
     // Start is called before the first frame update
@@ -23,7 +25,9 @@ public class PlayerMovement : MonoBehaviour
         //becuase the rigidbody2d is attached to the player and this script
         //is also attached to the player.
         playerRigidBody = GetComponent<Rigidbody2D>();
-        canJump = true;
+        numJumps = 1;
+        maxNumJumps = 1; ;
+
 
     }
 
@@ -68,11 +72,11 @@ public class PlayerMovement : MonoBehaviour
 
     private void jump()
     {
-        if(Input.GetKeyDown(KeyCode.Space) && canJump)
+        if(Input.GetKeyDown(KeyCode.Space) && numJumps <= maxNumJumps)
         {
             playerRigidBody.velocity = new Vector2(playerRigidBody.velocity.x, jumpForce);
 
-            canJump = false;
+            numJumps++;
         }
     }
 
@@ -92,11 +96,16 @@ public class PlayerMovement : MonoBehaviour
         }
 
     }
-    private void OnCollisionExit2D(Collision2D collision)
+
+    private void OnTriggerEnter2D(Collider2D collision)
     {
-        if(collision.gameObject.CompareTag("Ground"))
+        if(collision.gameObject.CompareTag("DoubleJump"))
         {
-            canJump = false;
+            //give jumop and delete 
+            Destroy(collision.gameObject);
+            maxNumJumps = 2;
+
+
         }
     }
 }
