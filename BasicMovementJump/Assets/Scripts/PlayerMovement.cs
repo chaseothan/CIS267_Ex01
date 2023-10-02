@@ -91,7 +91,6 @@ public class PlayerMovement : MonoBehaviour
         }
         else if(collision.gameObject.CompareTag("Ground"))
         {
-            canJump = true;
 
         }
 
